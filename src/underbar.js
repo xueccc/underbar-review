@@ -139,11 +139,8 @@
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
     var result = [];
-      console.log(iterator);
     _.each(collection, function(item){
-    
       result.push(iterator(item));
-     
     });
     return result;
   };
@@ -187,19 +184,34 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+  
+    var array;
+    if(accumulator !== undefined) {
+      array = collection.slice();
+    } else {
+      array = collection.slice(1, collection.length);
+      accumulator = array[0];
+    }
+    
+    _.each(array, function(item) {
+      debugger;
+      accumulator = iterator(accumulator, item);
+    });
+    
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
-  _.contains = function(collection, target) {
-    // TIP: Many iteration problems can be most easily expressed in
-    // terms of reduce(). Here's a freebie to demonstrate!
-    return _.reduce(collection, function(wasFound, item) {
-      if (wasFound) {
-        return true;
-      }
-      return item === target;
-    }, false);
-  };
+  // _.contains = function(collection, target) {
+  //   // TIP: Many iteration problems can be most easily expressed in
+  //   // terms of reduce(). Here's a freebie to demonstrate!
+  //   return _.reduce(collection, function(wasFound, item) {
+  //     if (wasFound) {
+  //       return true;
+  //     }
+  //     return item === target;
+  //   }, false);
+  // };
 
 
   // Determine whether all of the elements match a truth test.
