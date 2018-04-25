@@ -187,7 +187,7 @@
   
     var array;
     if(accumulator !== undefined) {
-      array = collection.slice();
+      array = _.copyIterable(collection);
     } else {
       accumulator = collection[0];
       array = collection.slice(1, collection.length);
@@ -201,6 +201,23 @@
     return accumulator;
   };
 
+  // Our new little helper function for _.reduce()
+  _.copyIterable = function(iterable) {
+    var result;
+    if (Array.isArray(iterable)) {
+      result = [];
+      for(var i = 0; i < iterable.length; i++) {
+        result.push(iterable[i]);
+      }
+    } else if (typeof iterable === 'object') {
+      result = {};
+      for(var key in iterable) {
+        result[key] = iterable[key];
+      }
+    }
+    
+    return result;
+  }
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
@@ -216,12 +233,15 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    // TIP: Try re-using reduce() here.
+    iterator = iterator ? iterator : _.identity;
+    
     return _.reduce(collection, function(acc, item){
-      if(iterator(item)){
-        acc.push(item);
+      if(!acc || typeof acc === 'undefined') {
+        return false;
+      } else {
+        return iterator(item) ? true : false;
       }
-    }, [])
+    }, true)
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
